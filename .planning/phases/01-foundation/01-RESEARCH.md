@@ -775,22 +775,22 @@ For Tauri-specific tasks, consider whether they fit Turbo's caching model:
 
 ---
 
-## Open Questions
+## Open Questions (RESOLVED)
 
 1. **Android Studio installation state on dev machine**
    - What we know: No Android SDK found at `~/Library/Android/sdk/` (macOS default path)
    - What's unclear: Whether Android Studio is installed in a non-default location, or whether it needs to be installed fresh
-   - Recommendation: Wave 0 of the plan should include an explicit step to verify and install Android Studio if not found
+   - RESOLVED: Plan 01-01 Task 1 includes a human checkpoint for SDK/NDK setup verification and installation
 
 2. **pnpm catalog additions needed for Tauri packages**
    - What we know: `@tauri-apps/cli`, `@tauri-apps/api`, `@tauri-apps/plugin-store` are not in the pnpm catalog
    - What's unclear: Whether these should be added to the workspace catalog (for future Tauri apps) or kept as direct dependencies in `apps/tauri-todo/package.json` only
-   - Recommendation: Keep as direct dependencies in `apps/tauri-todo/package.json` — they're Tauri-specific and no other workspace package will need them
+   - RESOLVED: Plan 01-02 Task 1 keeps them as direct dependencies in `apps/tauri-todo/package.json` — Tauri-specific, no other workspace package needs them
 
 3. **Turbo caching for `android:build`**
    - What we know: Turbo can cache outputs; Cargo has its own cache in `target/`
    - What's unclear: Whether Turbo caching `android:build` would interfere with Cargo's build cache
-   - Recommendation: Set `"cache": false` for `android:build` in Turbo to let Cargo manage its own caching
+   - RESOLVED: Plan 01-03 Task 2 sets `"cache": false` for `android:build` in Turbo to let Cargo manage its own caching
 
 ---
 
