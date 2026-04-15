@@ -52,14 +52,15 @@ System font stack only. No web font imports. Source: CONTEXT.md D-21.
 | Role | Size | Weight | Line Height | Usage |
 |------|------|--------|-------------|-------|
 | Body | 16px | 400 | 1.5 | Input labels, response text, version info |
-| Label | 14px | 500 | 1.4 | Section labels, field captions |
+| Label | 14px | 400 | 1.4 | Section labels, field captions |
 | Heading | 20px | 600 | 1.2 | Verification screen title ("Tauri Todo — Verification") |
-| Display | 28px | 700 | 1.1 | Not used in Phase 1 |
 
 Tailwind classes:
 - Body: `text-base font-normal leading-normal`
-- Label: `text-sm font-medium`
+- Label: `text-sm font-normal`
 - Heading: `text-xl font-semibold`
+
+Labels gain visual distinction from body through smaller size (14px vs 16px), not weight. Two weights total: 400 and 600.
 
 ---
 
@@ -71,7 +72,7 @@ Light-only color scheme. Source: CONTEXT.md D-27. No dark mode in Phase 1.
 |------|-------|-------|
 | Dominant (60%) | `#ffffff` (white) | Page background |
 | Secondary (30%) | `#f3f4f6` (gray-100) | Section card backgrounds, info panels |
-| Accent (10%) | `#1d4ed8` (blue-700) | Primary action button background only |
+| Accent (10%) | `#1d4ed8` (blue-700) | Primary action button backgrounds and input focus ring |
 | Destructive | not applicable | No destructive actions in Phase 1 |
 | Text primary | `#111827` (gray-900) | All body and heading text |
 | Text secondary | `#6b7280` (gray-500) | Version info, captions |
@@ -79,7 +80,7 @@ Light-only color scheme. Source: CONTEXT.md D-27. No dark mode in Phase 1.
 | Success indicator | `#16a34a` (green-600) | Store read/write success message text only |
 | Error indicator | `#dc2626` (red-600) | IPC error message text only |
 
-Accent reserved for: the "Send Greeting" button background and the "Test Store" button background. No other elements use blue-700.
+Accent reserved for: the "Send Greeting" button background, the "Test Store" button background, and the name input focus ring. No other elements use blue-700.
 
 Tailwind classes reference (Tailwind 4 with inline theme):
 - Background: `bg-white`
@@ -103,7 +104,7 @@ The entire Phase 1 UI is one screen: a verification checklist that proves the fu
 │  Tauri Todo — Verification           │  ← Heading (text-xl, semibold)
 │                                      │
 │  ┌──── IPC Section ──────────────┐   │
-│  │  Name: [____________] [Send]  │   │
+│  │  Name: [____________] [Send Greeting]  │
 │  │  Response: Hello, {name}!     │   │
 │  └───────────────────────────────┘   │
 │                                      │
@@ -164,21 +165,21 @@ Tailwind: `w-full h-10 px-3 bg-white border border-gray-200 rounded-md text-base
 - Height: 40px minimum
 - Padding: 8px vertical, 16px horizontal
 - Background: blue-700
-- Text: white, 14px, weight 500
+- Text: white, 14px, weight 400
 - Border-radius: 6px
 - Active state: opacity-90 (no hover states — mobile-only, source: REQUIREMENTS.md UX-02 principle)
 
-Tailwind: `h-10 px-4 bg-blue-700 text-white text-sm font-medium rounded-md active:opacity-90`
+Tailwind: `h-10 px-4 bg-blue-700 text-white text-sm font-normal rounded-md active:opacity-90`
 
 Note: No `hover:` variants. Interaction is touch only (principle applies from Phase 1 to avoid rework).
 
 ### IPC + Store inline layout
 
-Name input and Send button sit in a single row with an 8px gap:
+Name input and Send Greeting button sit in a single row with an 8px gap:
 ```
 <div class="flex gap-2">
   <input class="flex-1 ..." />
-  <button class="shrink-0 ...">Send</button>
+  <button class="shrink-0 ...">Send Greeting</button>
 </div>
 ```
 
@@ -191,7 +192,7 @@ Name input and Send button sit in a single row with an 8px gap:
 | Screen heading | "Tauri Todo — Verification" | CONTEXT.md D-22 (app name), phase goal |
 | IPC section label | "IPC Bridge" | Descriptive of what is being tested |
 | Input placeholder | "Enter your name" | Classic Tauri greet demo, D-17 |
-| Send button | "Send" | Minimal verb; screen is for devs |
+| Send button | "Send Greeting" | Verb + noun; IPC section context |
 | IPC response (idle) | "— awaiting response —" | Neutral idle state |
 | IPC response (success) | Rust returns "Hello, {name}!" verbatim | CONTEXT.md D-17 |
 | IPC response (error) | "IPC error: {message}. Check logcat." | Problem + action, D-33 |
@@ -214,7 +215,7 @@ Name input and Send button sit in a single row with an 8px gap:
 | Element | States |
 |---------|--------|
 | Name input | idle, focused (blue ring), filled |
-| Send button | idle, active (opacity-90), loading (disabled + text "Sending...") |
+| Send Greeting button | idle, active (opacity-90), loading (disabled + text "Sending...") |
 | Test Store button | idle, active (opacity-90), loading (disabled + text "Testing...") |
 | IPC response area | idle ("— awaiting —"), loading, success (green-600 text), error (red-600 text) |
 | Store status area | idle ("— not tested —"), loading, success (green-600 text), error (red-600 text) |
