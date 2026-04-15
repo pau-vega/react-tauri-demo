@@ -28,7 +28,12 @@ Decimal phases appear between their surrounding integers in numeric order.
   3. `gen/` directories are gitignored and do not appear in `git status`
   4. Vite dev server is accessible from the Android device via `TAURI_DEV_HOST`
   5. Mobile capabilities file exists and grants plugin permissions for Android
-**Plans**: TBD
+**Plans:** 3 plans
+
+Plans:
+- [ ] 01-01-PLAN.md — Environment setup: Android SDK/NDK verification, Rust targets, gitignore
+- [ ] 01-02-PLAN.md — Project scaffold: all JS/TS/Rust files, Tauri config, Turbo integration
+- [ ] 01-03-PLAN.md — Android init, capabilities, verification screen, device test
 **UI hint**: yes
 
 ### Phase 2: Todo App
@@ -62,6 +67,6 @@ Phases execute in numeric order: 1 → 2 → 3
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Foundation | 0/? | Not started | - |
+| 1. Foundation | 0/3 | Not started | - |
 | 2. Todo App | 0/? | Not started | - |
 | 3. Mobile Polish | 0/? | Not started | - |
