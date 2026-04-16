@@ -37,6 +37,14 @@
     "e2e": {
       "dependsOn": ["^build"],
       "cache": false
+    },
+    "android:dev": {
+      "persistent": true,
+      "cache": false
+    },
+    "android:build": {
+      "dependsOn": ["^build"],
+      "cache": false
     }
   }
 }
