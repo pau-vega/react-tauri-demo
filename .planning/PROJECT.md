@@ -12,12 +12,12 @@ Prove that Tauri v2 can build and install a React app as a native mobile app on 
 
 ### Validated
 
-(None yet — ship to validate)
+- [x] Tauri v2 project scaffolded with React frontend in `apps/tauri-todo` — Validated in Phase 1: Foundation
+- [x] Integrates with monorepo tooling (pnpm workspace, Turbo, shared tsconfig) — Validated in Phase 1: Foundation
+- [x] App configured for Android and iOS mobile targets (no desktop) — Validated in Phase 1: Foundation (Android verified on device)
 
 ### Active
 
-- [ ] Tauri v2 project scaffolded with React frontend in `apps/tauri-todo`
-- [ ] App configured for Android and iOS mobile targets (no desktop)
 - [ ] User can add a todo item
 - [ ] User can mark a todo as complete
 - [ ] User can delete a todo
@@ -25,7 +25,6 @@ Prove that Tauri v2 can build and install a React app as a native mobile app on 
 - [ ] App builds and installs on Android
 - [ ] App builds and installs on iOS
 - [ ] Standalone styling (no dependency on @monorepo-template/ui)
-- [ ] Integrates with monorepo tooling (pnpm workspace, Turbo, shared tsconfig)
 
 ### Out of Scope
 
@@ -79,4 +78,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-04-15 after initialization*
+*Last updated: 2026-04-16 after Phase 1 (Foundation) completion*
