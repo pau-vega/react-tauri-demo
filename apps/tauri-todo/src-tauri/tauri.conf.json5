@@ -17,6 +17,7 @@
       },
     ],
     security: {
+      csp: "default-src 'self'; style-src 'self' 'unsafe-inline'",
       capabilities: ["mobile-capability"],
     },
   },
