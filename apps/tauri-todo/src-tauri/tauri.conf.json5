@@ -1,0 +1,33 @@
+// Tauri v2 configuration — JSON5 format (D-45)
+{
+  productName: "Tauri Todo",
+  version: "0.1.0",
+  identifier: "com.monorepo.tauritodo",
+  build: {
+    beforeDevCommand: "pnpm dev",
+    beforeBuildCommand: "pnpm build",
+    devUrl: "http://localhost:1420",
+    frontendDist: "../dist",
+  },
+  app: {
+    windows: [
+      {
+        label: "main",
+        title: "Tauri Todo",
+      },
+    ],
+    security: {
+      capabilities: ["mobile-capability"],
+    },
+  },
+  bundle: {
+    active: true,
+    icon: [
+      "icons/32x32.png",
+      "icons/128x128.png",
+      "icons/128x128@2x.png",
+      "icons/icon.icns",
+      "icons/icon.ico",
+    ],
+  },
+}
