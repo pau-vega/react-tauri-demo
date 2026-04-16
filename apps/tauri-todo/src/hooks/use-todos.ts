@@ -1,0 +1,75 @@
+import { load, type Store } from "@tauri-apps/plugin-store"
+import { useEffect, useRef, useState } from "react"
+
+export type Todo = {
+  id: string
+  text: string
+  completed: boolean
+}
+
+export type TodosState =
+  | { status: "loading" }
+  | { status: "ready"; todos: Todo[] }
+  | { status: "error"; message: string }
+
+export function useTodos() {
+  const [state, setState] = useState<TodosState>({ status: "loading" })
+  const storeRef = useRef<Store | null>(null)
+
+  useEffect(() => {
+    let cancelled = false
+    async function init() {
+      try {
+        const store = await load("store.json", { autoSave: false, defaults: {} })
+        if (cancelled) return
+        storeRef.current = store
+        const stored = await store.get<Todo[]>("todos")
+        if (cancelled) return
+        setState({ status: "ready", todos: stored ?? [] })
+      } catch (err) {
+        if (cancelled) return
+        const message = err instanceof Error ? err.message : String(err)
+        setState({ status: "error", message })
+      }
+    }
+    void init()
+    return () => {
+      cancelled = true
+    }
+  }, [])
+
+  async function save(next: Todo[]) {
+    const store = storeRef.current
+    if (!store) return
+    try {
+      await store.set("todos", next)
+      await store.save()
+      setState({ status: "ready", todos: next })
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err)
+      setState({ status: "error", message })
+    }
+  }
+
+  async function addTodo(text: string) {
+    if (state.status !== "ready") return
+    const trimmed = text.trim()
+    if (trimmed.length === 0) return
+    const next: Todo[] = [...state.todos, { id: crypto.randomUUID(), text: trimmed, completed: false }]
+    await save(next)
+  }
+
+  async function toggleTodo(id: string) {
+    if (state.status !== "ready") return
+    const next = state.todos.map((t) => (t.id === id ? { ...t, completed: !t.completed } : t))
+    await save(next)
+  }
+
+  async function deleteTodo(id: string) {
+    if (state.status !== "ready") return
+    const next = state.todos.filter((t) => t.id !== id)
+    await save(next)
+  }
+
+  return { state, addTodo, toggleTodo, deleteTodo }
+}
