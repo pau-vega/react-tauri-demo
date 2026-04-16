@@ -48,7 +48,12 @@ Plans:
   3. User can tap a delete control to remove a todo permanently
   4. An empty state message appears when no todos exist
   5. Todos added in one session are still present after closing and reopening the app
-**Plans**: TBD
+**Plans:** 3 plans
+
+Plans:
+- [ ] 02-01-PLAN.md — useTodos hook with store CRUD and Rust greet command removal
+- [ ] 02-02-PLAN.md — Todo components (TodoApp, TodoInput, TodoList, TodoItem) and app.tsx wiring
+- [ ] 02-03-PLAN.md — Android device verification checkpoint
 
 ### Phase 3: Mobile Polish
 **Goal**: The app feels native on Android with proper touch targets and haptic feedback
@@ -69,6 +74,6 @@ Phases execute in numeric order: 1 → 2 → 3
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Foundation | 4/5 | In progress | - |
-| 2. Todo App | 0/? | Not started | - |
+| 1. Foundation | 5/5 | Complete | - |
+| 2. Todo App | 0/3 | Planned | - |
 | 3. Mobile Polish | 0/? | Not started | - |
