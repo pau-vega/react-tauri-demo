@@ -146,3 +146,6 @@ vite.config.ts.timestamp-*
 
 # Turbo
 .turbo
+
+# Tauri generated files
+gen/
