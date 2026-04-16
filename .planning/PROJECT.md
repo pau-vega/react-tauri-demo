@@ -15,16 +15,16 @@ Prove that Tauri v2 can build and install a React app as a native mobile app on 
 - [x] Tauri v2 project scaffolded with React frontend in `apps/tauri-todo` — Validated in Phase 1: Foundation
 - [x] Integrates with monorepo tooling (pnpm workspace, Turbo, shared tsconfig) — Validated in Phase 1: Foundation
 - [x] App configured for Android and iOS mobile targets (no desktop) — Validated in Phase 1: Foundation (Android verified on device)
+- [x] User can add a todo item — Validated in Phase 2: Todo App (TODO-01, device-verified)
+- [x] User can mark a todo as complete — Validated in Phase 2: Todo App (TODO-02, device-verified)
+- [x] User can delete a todo — Validated in Phase 2: Todo App (TODO-03, device-verified)
+- [x] Todos persist across app restarts via @tauri-apps/plugin-store — Validated in Phase 2: Todo App (PERS-02, device-verified on cold restart)
+- [x] Standalone styling (no dependency on @monorepo-template/ui) — Validated in Phase 2: Todo App (raw Tailwind, zero UI-package imports)
 
 ### Active
 
-- [ ] User can add a todo item
-- [ ] User can mark a todo as complete
-- [ ] User can delete a todo
-- [ ] Todos persist across app restarts via @tauri-apps/plugin-store
 - [ ] App builds and installs on Android
 - [ ] App builds and installs on iOS
-- [ ] Standalone styling (no dependency on @monorepo-template/ui)
 
 ### Out of Scope
 
@@ -55,10 +55,10 @@ Prove that Tauri v2 can build and install a React app as a native mobile app on 
 
 | Decision | Rationale | Outcome |
 |----------|-----------|---------|
-| Tauri v2 over Capacitor/React Native | Want to test Tauri's Rust-based approach to mobile | — Pending |
-| @tauri-apps/plugin-store for persistence | Native key-value storage, no web API reliance | — Pending |
-| Standalone styling | Keep experiment isolated from UI package | — Pending |
-| Mobile only | Core question is whether Tauri mobile works | — Pending |
+| Tauri v2 over Capacitor/React Native | Want to test Tauri's Rust-based approach to mobile | Validated — Phase 1+2 on Android |
+| @tauri-apps/plugin-store for persistence | Native key-value storage, no web API reliance | Validated — PERS-02 passed on-device restart |
+| Standalone styling | Keep experiment isolated from UI package | Validated — raw Tailwind in Phase 2, zero UI imports |
+| Mobile only | Core question is whether Tauri mobile works | Validated — Android working; iOS deferred to v2 |
 
 ## Evolution
 
@@ -78,4 +78,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-04-16 after Phase 1 (Foundation) completion*
+*Last updated: 2026-04-16 after Phase 2 (Todo App) completion*
