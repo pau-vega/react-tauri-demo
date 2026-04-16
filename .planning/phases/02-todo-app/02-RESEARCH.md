@@ -76,7 +76,7 @@ The work is almost entirely TypeScript/React: four component files, one custom h
 
 The primary risk is **store initialization race conditions**: `Store.load()` is async, so the hook must gate rendering behind a loading state to prevent null-reference errors on `store.get()`. The secondary risk is **StrictMode double-invocation**: React StrictMode calls `useEffect` twice in development, which means `Store.load()` fires twice. The store reference must be held outside of per-render scope (e.g., via `useRef`) to avoid creating two store instances.
 
-**Primary recommendation:** Build the `useTodos` hook first (load → CRUD → save), then wire presentational components to it. All persistence complexity is contained in the hook — components receive plain arrays and callbacks.
+**Primary recommendation:** Build the `useTodos` hook first (load -> CRUD -> save), then wire presentational components to it. All persistence complexity is contained in the hook — components receive plain arrays and callbacks.
 
 ---
 
@@ -132,34 +132,34 @@ The primary risk is **store initialization race conditions**: `Store.load()` is 
 
 ```
 User tap / keyboard
-        │
-        ▼
+        |
+        v
   TodoInput (form)
-  TodoList → TodoItem (×N)
-        │
-        ▼
+  TodoList -> TodoItem (xN)
+        |
+        v
   [useTodos hook]
-  ┌─────────────────────────────────────────┐
-  │  State: todos[], loadingState           │
-  │  addTodo() → mutate array → store.save()│
-  │  toggleTodo() → mutate → store.save()   │
-  │  deleteTodo() → mutate → store.save()   │
-  │  useEffect → Store.load("store.json")   │
-  │              → store.get("todos")       │
-  └─────────────────────────────────────────┘
-        │
-        ▼
+  +---------------------------------------------+
+  |  State: todos[], loadingState               |
+  |  addTodo() -> mutate array -> store.save()  |
+  |  toggleTodo() -> mutate -> store.save()     |
+  |  deleteTodo() -> mutate -> store.save()     |
+  |  useEffect -> Store.load("store.json")      |
+  |              -> store.get("todos")          |
+  +---------------------------------------------+
+        |
+        v
   @tauri-apps/plugin-store (JS binding)
-        │  IPC bridge
-        ▼
+        |  IPC bridge
+        v
   tauri_plugin_store (Rust)
-        │
-        ▼
+        |
+        v
   store.json (Android app data directory)
 ```
 
 **Data flow for app startup:**
-1. `main.tsx` → renders `<App />` → renders `<TodoApp />`
+1. `main.tsx` -> renders `<App />` -> renders `<TodoApp />`
 2. `TodoApp` calls `useTodos()` — hook fires `useEffect`
 3. `Store.load("store.json", { autoSave: false })` — async, returns `Store` instance
 4. `store.get<Todo[]>("todos")` — returns array or null
@@ -167,7 +167,7 @@ User tap / keyboard
 6. React re-renders — `TodoList` now receives the persisted array
 
 **Data flow for mutation:**
-1. User triggers action (add/toggle/delete) → callback from `useTodos`
+1. User triggers action (add/toggle/delete) -> callback from `useTodos`
 2. Hook computes next array (filter / map / concat)
 3. `store.set("todos", nextTodos)`
 4. `store.save()` — flushes to disk
@@ -476,17 +476,17 @@ active:opacity-90 active:text-red-600
 
 ---
 
-## Open Questions
+## Open Questions (RESOLVED)
 
 1. **Empty `generate_handler![]` — warning or clean compile?**
    - What we know: The greet command must be removed (D-09); the builder call exists
    - What's unclear: Whether Tauri 2.x's proc macro warns on empty invocation
-   - Recommendation: Remove the greet function and test; if Rust warns, remove the `.invoke_handler()` call entirely. Either outcome is a 1-line fix.
+   - RESOLVED: Use `tauri::generate_handler![]` with empty list. If the Rust compiler emits a warning, the fallback is to remove the `.invoke_handler()` line entirely from the builder chain. Either outcome is a 1-line fix. Plan 02-01 Task 2 accounts for both paths in its action and acceptance criteria ("warnings about empty handler are acceptable").
 
 2. **Store behavior in web dev mode (`pnpm dev` without Tauri)**
    - What we know: Phase 1 `isTauriRuntime()` guard was used to prevent store calls outside Tauri runtime
    - What's unclear: Whether to replicate this guard in `useTodos` or let the error state catch it
-   - Recommendation: Let the `try/catch` in `useEffect` catch the error and set `{ status: "error" }`. The UI spec already defines an error state. No need for a runtime guard.
+   - RESOLVED: Let the `try/catch` in `useEffect` catch the error and set `{ status: "error", message }`. The UI spec already defines an error state ("Could not load todos. Restart the app and try again."). No `isTauriRuntime()` guard needed in `useTodos` — the error state renders gracefully in web dev mode.
 
 ---
 
