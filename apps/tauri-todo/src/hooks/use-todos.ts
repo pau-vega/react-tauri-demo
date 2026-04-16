@@ -15,6 +15,7 @@ export type TodosState =
 export function useTodos() {
   const [state, setState] = useState<TodosState>({ status: "loading" })
   const storeRef = useRef<Store | null>(null)
+  const todosRef = useRef<Todo[]>([])
 
   useEffect(() => {
     let cancelled = false
@@ -25,7 +26,8 @@ export function useTodos() {
         storeRef.current = store
         const stored = await store.get<Todo[]>("todos")
         if (cancelled) return
-        setState({ status: "ready", todos: stored ?? [] })
+        todosRef.current = stored ?? []
+        setState({ status: "ready", todos: todosRef.current })
       } catch (err) {
         if (cancelled) return
         const message = err instanceof Error ? err.message : String(err)
@@ -44,6 +46,7 @@ export function useTodos() {
     try {
       await store.set("todos", next)
       await store.save()
+      todosRef.current = next
       setState({ status: "ready", todos: next })
     } catch (err) {
       const message = err instanceof Error ? err.message : String(err)
@@ -52,22 +55,22 @@ export function useTodos() {
   }
 
   async function addTodo(text: string) {
-    if (state.status !== "ready") return
+    if (!storeRef.current) return
     const trimmed = text.trim()
     if (trimmed.length === 0) return
-    const next: Todo[] = [...state.todos, { id: crypto.randomUUID(), text: trimmed, completed: false }]
+    const next: Todo[] = [...todosRef.current, { id: crypto.randomUUID(), text: trimmed, completed: false }]
     await save(next)
   }
 
   async function toggleTodo(id: string) {
-    if (state.status !== "ready") return
-    const next = state.todos.map((t) => (t.id === id ? { ...t, completed: !t.completed } : t))
+    if (!storeRef.current) return
+    const next = todosRef.current.map((t) => (t.id === id ? { ...t, completed: !t.completed } : t))
     await save(next)
   }
 
   async function deleteTodo(id: string) {
-    if (state.status !== "ready") return
-    const next = state.todos.filter((t) => t.id !== id)
+    if (!storeRef.current) return
+    const next = todosRef.current.filter((t) => t.id !== id)
     await save(next)
   }
 
