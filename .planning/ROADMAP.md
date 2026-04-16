@@ -34,7 +34,7 @@ Plans:
 - [x] 01-01-PLAN.md — Environment setup: Android SDK/NDK verification, Rust targets, gitignore
 - [x] 01-02-PLAN.md — Frontend scaffold: React/Vite/TS config files, HTML entry point, workspace integration
 - [x] 01-03-PLAN.md — Rust backend: Cargo/Tauri config, greet command, store plugin, icons, Turbo tasks
-- [ ] 01-04-PLAN.md — Android init, capabilities, verification screen, device test
+- [x] 01-04-PLAN.md — Android init, capabilities, verification screen, device test
 **UI hint**: yes
 
 ### Phase 2: Todo App
