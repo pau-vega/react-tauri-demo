@@ -1,6 +1,6 @@
 #[tauri::command]
-fn greet(name: String) -> String {
-    format!("Hello, {}!", name)
+fn greet(name: String) -> Result<String, String> {
+    Ok(format!("Hello, {}!", name))
 }
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
