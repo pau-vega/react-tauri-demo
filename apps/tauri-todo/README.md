@@ -43,6 +43,28 @@ First build takes 10-30 minutes (Gradle + Rust cross-compilation). Subsequent bu
 
 HMR is automatic when `TAURI_DEV_HOST` is set (Tauri sets this for you).
 
+> Running from app directory (`apps/tauri-todo`). See [Running from monorepo root](#running-from-monorepo-root) for root-level usage.
+
+### Running from monorepo root
+
+Per project convention, there are no root-level convenience scripts. Use `--filter` to target this app from anywhere in the monorepo:
+
+```sh
+# Development (Android device)
+pnpm --filter @monorepo-template/tauri-todo android:dev
+
+# Build (Android APK)
+pnpm --filter @monorepo-template/tauri-todo android:build
+
+# Web dev server
+pnpm --filter @monorepo-template/tauri-todo dev
+
+# Type checking
+pnpm --filter @monorepo-template/tauri-todo typecheck
+```
+
+> **Note:** The `--filter` flag must come BEFORE the command name. `pnpm android:dev --filter ...` will fail.
+
 ### Other commands
 
 | Command | Description |
