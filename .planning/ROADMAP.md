@@ -51,7 +51,7 @@ Plans:
 **Plans:** 3 plans
 
 Plans:
-- [ ] 02-01-PLAN.md — useTodos hook with store CRUD and Rust greet command removal
+- [x] 02-01-PLAN.md — useTodos hook with store CRUD and Rust greet command removal
 - [ ] 02-02-PLAN.md — Todo components (TodoApp, TodoInput, TodoList, TodoItem) and app.tsx wiring
 - [ ] 02-03-PLAN.md — Android device verification checkpoint
 
