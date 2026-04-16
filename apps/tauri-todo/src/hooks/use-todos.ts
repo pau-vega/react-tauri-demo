@@ -1,4 +1,6 @@
-import { load, type Store } from "@tauri-apps/plugin-store"
+import type { Store } from "@tauri-apps/plugin-store"
+
+import { load } from "@tauri-apps/plugin-store"
 import { useEffect, useRef, useState } from "react"
 
 export type Todo = {
