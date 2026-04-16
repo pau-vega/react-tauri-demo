@@ -1,6 +1,6 @@
 ---
 phase: 01-foundation
-reviewed: 2026-04-16T10:30:00Z
+reviewed: 2026-04-16T18:36:00Z
 depth: standard
 files_reviewed: 19
 files_reviewed_list:
@@ -24,109 +24,82 @@ files_reviewed_list:
   - apps/tauri-todo/vitest.config.ts
   - turbo.json
 findings:
-  critical: 1
-  warning: 3
+  critical: 0
+  warning: 2
   info: 2
-  total: 6
+  total: 4
 status: issues_found
 ---
 
-# Phase 1: Code Review Report
+# Phase 01: Code Review Report
 
-**Reviewed:** 2026-04-16T10:30:00Z
+**Reviewed:** 2026-04-16T18:36:00Z
 **Depth:** standard
 **Files Reviewed:** 19
 **Status:** issues_found
 
 ## Summary
 
-The Phase 1 foundation establishes a Tauri v2 + React app within the existing pnpm monorepo. The overall structure is correct and follows Tauri v2 conventions: `lib.rs` owns all application logic, `main.rs` is a thin passthrough, capabilities are properly scoped to mobile platforms, and the Vite config is correctly configured for Tauri dev/build flows. The frontend verification screen uses well-structured discriminated union types for state management, consistent with the project's TypeScript rules.
+This is a re-review after gap closure fixes. The four critical/warning issues from the prior review (missing CSP, greet command not returning Result, non-null assertion on root element, __dirname usage) have all been resolved. The codebase is now in good shape for a phase 01 foundation.
 
-Key concerns: missing Content Security Policy in the Tauri config (security), the `greet` Rust command returns a plain `String` instead of `Result<T, E>` (robustness per Tauri skill rules), and the Vite config uses a deprecated `__dirname` pattern when a Vite 5+ built-in alternative exists.
+The Tauri v2 backend follows recommended patterns: `lib.rs` owns all logic with `mobile_entry_point`, `main.rs` is a thin passthrough, the Store plugin is registered on both Rust and JS sides with matching `store:default` capability permission, and the `greet` command returns `Result<String, String>`. The frontend uses well-structured discriminated union types for IPC and Store state, guards Tauri API calls behind `isTauriRuntime()` to prevent crashes in browser dev mode, and handles errors with informative messages. Vite config correctly uses `import.meta.dirname`, configures HMR for mobile dev via `TAURI_DEV_HOST`, and targets `safari13` for WebView compatibility.
 
-## Critical Issues
-
-### CR-01: Missing Content Security Policy (CSP) in Tauri Config
-
-**File:** `apps/tauri-todo/src-tauri/tauri.conf.json5:19`
-**Issue:** The `app.security` block defines capabilities but does not set a `csp` (Content Security Policy). Without a CSP, the WebView has no restrictions on script sources, style sources, or connection origins. While this is a mobile-only app with no remote content today, the absence of CSP is a security gap -- any future change that loads external resources, or any XSS in a dependency, would have no mitigation. The Tauri v2 skill reference explicitly recommends setting CSP.
-**Fix:**
-```json5
-security: {
-  csp: "default-src 'self'; style-src 'self' 'unsafe-inline'",
-  capabilities: ["mobile-capability"],
-},
-```
-The `'unsafe-inline'` for `style-src` is needed because Tailwind CSS injects inline styles. Adjust further if the app later loads images or fonts from external origins.
+Two warnings remain: a missing `.gitignore` entry for `target/` (Rust build artifacts at risk of accidental commit) and `'unsafe-inline'` in the style CSP. Two informational items note a component-scoped static variable and unused Cargo dependencies.
 
 ## Warnings
 
-### WR-01: Rust `greet` Command Does Not Return `Result<T, E>`
+### WR-01: Missing .gitignore entry for Rust target/ directory
 
-**File:** `apps/tauri-todo/src-tauri/src/lib.rs:1-4`
-**Issue:** The `greet` command returns a plain `String`. The Tauri v2 skill's "Always Do" rules state: "Return `Result<T, E>` from commands for proper error handling." While this trivial command cannot fail today, establishing the `Result` pattern from the start prevents inconsistency as more commands are added. Returning a plain type means the frontend `invoke` call cannot distinguish between a Rust panic and a normal error.
-**Fix:**
-```rust
-#[tauri::command]
-fn greet(name: String) -> Result<String, String> {
-    Ok(format!("Hello, {}!", name))
-}
+**File:** `.gitignore:151`
+**Issue:** The root `.gitignore` ignores `gen/` (Tauri generated files) but does not ignore `target/` (Rust compilation artifacts). The `target/` directory can grow to several GB and is currently showing as untracked in git status (`?? apps/tauri-todo/src-tauri/target/`). There is no `.gitignore` inside `src-tauri/` either. Without an ignore rule, `target/` risks being accidentally staged and committed, bloating the repository.
+**Fix:** Add `target/` to the root `.gitignore` alongside the existing Tauri entry:
+
+```gitignore
+# Tauri generated files
+gen/
+
+# Rust build artifacts
+target/
 ```
 
-### WR-02: Non-null Assertion on `document.getElementById("root")` Without Fallback
+Alternatively, create `apps/tauri-todo/src-tauri/.gitignore` with `target/` to scope the rule to the Tauri app only.
 
-**File:** `apps/tauri-todo/src/main.tsx:7`
-**Issue:** `document.getElementById("root")!` uses a non-null assertion. If the `root` element is missing (e.g., a malformed `index.html` or a mobile WebView rendering issue), this will throw an uncaught `TypeError` with no descriptive message, making debugging difficult -- especially on a mobile device where console access requires logcat.
-**Fix:**
-```tsx
-const rootElement = document.getElementById("root")
-if (!rootElement) {
-  throw new Error("Root element #root not found in document. Check index.html.")
-}
-createRoot(rootElement).render(
-  <StrictMode>
-    <App />
-  </StrictMode>,
-)
+### WR-02: CSP allows unsafe-inline for styles
+
+**File:** `apps/tauri-todo/src-tauri/tauri.conf.json5:20`
+**Issue:** The Content Security Policy includes `style-src 'self' 'unsafe-inline'`. While this is commonly required by CSS-in-JS or development tooling, `'unsafe-inline'` weakens the CSP by allowing any inline `<style>` tags or `style` attributes. For a mobile-only Tauri app with no external content loading, the practical exploitation risk is low. However, Tailwind CSS v4 with the Vite plugin produces external CSS files in production builds, so `'unsafe-inline'` may be unnecessary for production.
+**Fix:** For development, the current CSP is acceptable. Before any production release, test removing `'unsafe-inline'`:
+
+```json5
+csp: "default-src 'self'; style-src 'self'",
 ```
 
-### WR-03: Vite Config Uses `__dirname` Instead of `import.meta.dirname`
-
-**File:** `apps/tauri-todo/vite.config.ts:33`
-**Issue:** The resolve alias uses `path.resolve(__dirname, "./src")`. In an ESM module (`"type": "module"` in package.json), `__dirname` is not natively available -- it works here only because Vite's config loading shims it. The project's own `eslint.config.ts` already uses the modern `import.meta.dirname` (line 10). Using `__dirname` is inconsistent and relies on Vite internals.
-**Fix:**
-```ts
-resolve: {
-  alias: {
-    "@": path.resolve(import.meta.dirname, "./src"),
-  },
-},
-```
-Apply the same change in `vitest.config.ts` line 15, which also uses `__dirname` via `resolve(__dirname, "./src")`.
+Build the Android APK via `pnpm android:build` and verify styles render correctly. If they do, the stricter CSP can be used in production.
 
 ## Info
 
-### IN-01: Unused `React` Import in Verification Screen
+### IN-01: Static platform variable computed inside component body
 
-**File:** `apps/tauri-todo/src/components/verification-screen.tsx:3`
-**Issue:** `React` is imported as a named import alongside `useState`. The `React` import is used only on line 104 to access `React.version`. Since React 17+ with the JSX transform, `React` does not need to be in scope for JSX. The import is technically used (for `React.version`), so this is not dead code, but it could be simplified.
-**Fix:** This is minor and acceptable as-is since `React.version` is a verification feature. No action required unless the verification screen is removed.
-
-### IN-02: `platform` Variable Computed on Every Render
-
-**File:** `apps/tauri-todo/src/components/verification-screen.tsx:22`
-**Issue:** `const platform = import.meta.env.TAURI_ENV_PLATFORM ?? "web"` is computed inside the component body on every render. Since environment variables are static (replaced at build time by Vite), this value never changes. Moving it outside the component would be slightly cleaner, though the cost is negligible.
+**File:** `apps/tauri-todo/src/components/verification-screen.tsx:26`
+**Issue:** `const platform = import.meta.env.TAURI_ENV_PLATFORM ?? "web"` is computed inside the component body on every render. Since `import.meta.env` values are statically replaced by Vite at build time, this value never changes at runtime. Moving it to module scope would be marginally cleaner and signals intent more clearly.
 **Fix:** Move to module scope:
+
 ```tsx
-const platform = import.meta.env.TAURI_ENV_PLATFORM ?? "web"
+const PLATFORM = import.meta.env.TAURI_ENV_PLATFORM ?? "web"
 
 export function VerificationScreen() {
-  // ...
+  // ... use PLATFORM on line 120
 }
 ```
 
+### IN-02: Cargo.toml includes serde/serde_json without current usage
+
+**File:** `apps/tauri-todo/src-tauri/Cargo.toml:13-14`
+**Issue:** The `serde` (with `derive` feature) and `serde_json` dependencies are declared but not directly used in `lib.rs` or `main.rs`. The current `greet` command uses only `String` and `Result<String, String>`, which don't require explicit serde derives. These dependencies are likely included in anticipation of future commands that will use struct serialization -- which is the standard Tauri pattern and aligns with the skill reference.
+**Fix:** No action needed. These will be required as soon as the first struct-based command or typed Store data is introduced. Keeping them avoids a future Cargo.toml change for an obvious addition.
+
 ---
 
-_Reviewed: 2026-04-16T10:30:00Z_
+_Reviewed: 2026-04-16T18:36:00Z_
 _Reviewer: Claude (gsd-code-reviewer)_
 _Depth: standard_
