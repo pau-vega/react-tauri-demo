@@ -1,5 +1,5 @@
-import { VerificationScreen } from "@/components/verification-screen"
+import { TodoApp } from "@/components/todo-app"
 
 export function App() {
-  return <VerificationScreen />
+  return <TodoApp />
 }
