@@ -4,6 +4,7 @@ import path from "path"
 import { defineConfig } from "vite"
 
 const host = process.env.TAURI_DEV_HOST
+const isDebug = process.env.TAURI_ENV_DEBUG === "true"
 
 export default defineConfig({
   plugins: [react(), tailwindcss()],
@@ -30,8 +31,8 @@ export default defineConfig({
     // "overrides" that narrow older targets (e.g. safari13) below what esbuild 0.27.7 can transpile
     // for parameter destructuring, so we opt out of transpilation entirely.
     target: "esnext",
-    minify: !process.env.TAURI_ENV_DEBUG ? "esbuild" : false,
-    sourcemap: !!process.env.TAURI_ENV_DEBUG,
+    minify: isDebug ? false : "esbuild",
+    sourcemap: isDebug,
   },
   resolve: {
     alias: {
