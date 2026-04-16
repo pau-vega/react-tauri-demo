@@ -1,6 +1,6 @@
 import { invoke } from "@tauri-apps/api/core"
 import { load } from "@tauri-apps/plugin-store"
-import { useState } from "react"
+import React, { useState } from "react"
 
 type IpcState =
   | { status: "idle" }
@@ -20,7 +20,6 @@ export function VerificationScreen() {
   const [storeState, setStoreState] = useState<StoreState>({ status: "idle" })
 
   const platform = import.meta.env.TAURI_ENV_PLATFORM ?? "web"
-  const tauriVersion = import.meta.env.TAURI_ENV_ARCH ?? "2.x.x"
 
   async function handleGreet() {
     setIpcState({ status: "loading" })
@@ -36,8 +35,8 @@ export function VerificationScreen() {
   async function handleStoreTest() {
     setStoreState({ status: "loading" })
     try {
-      const store = await load("store.json")
-      await store.set("test-key", { value: "hello from store" })
+      const store = await load("store.json", { autoSave: false })
+      await store.set("test-key", { value: "phase-1-check" })
       await store.save()
       const val = await store.get<{ value: string }>("test-key")
       setStoreState({ status: "success", value: val?.value ?? "read failed" })
@@ -53,7 +52,7 @@ export function VerificationScreen() {
         <h1 className="text-xl font-semibold text-gray-900">Tauri Todo — Verification</h1>
 
         <section className="bg-gray-100 border border-gray-200 rounded-lg p-6 flex flex-col gap-4">
-          <p className="text-sm font-normal text-gray-900">IPC Bridge</p>
+          <span className="text-sm text-gray-500">IPC Bridge</span>
           <div className="flex gap-2">
             <input
               className="flex-1 h-10 px-3 bg-white border border-gray-200 rounded-md text-base text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-700"
@@ -80,7 +79,7 @@ export function VerificationScreen() {
         </section>
 
         <section className="bg-gray-100 border border-gray-200 rounded-lg p-6 flex flex-col gap-4">
-          <p className="text-sm font-normal text-gray-900">Store Plugin</p>
+          <span className="text-sm text-gray-500">Store Plugin</span>
           <button
             className="h-10 px-4 bg-blue-700 text-white text-sm font-normal rounded-md active:opacity-90 disabled:opacity-50 self-start"
             disabled={storeState.status === "loading"}
@@ -101,10 +100,9 @@ export function VerificationScreen() {
         </section>
 
         <section className="bg-gray-100 border border-gray-200 rounded-lg p-6 flex flex-col gap-4">
-          <p className="text-sm font-normal text-gray-900">Environment</p>
-          <p className="text-base text-gray-500">Tauri: {tauriVersion}</p>
-          <p className="text-base text-gray-500">React: 19.x.x</p>
-          <p className="text-base text-gray-500">Platform: {platform}</p>
+          <span className="text-sm text-gray-500">Environment</span>
+          <p className="text-base text-gray-900">React: {React.version}</p>
+          <p className="text-base text-gray-900">Platform: {platform}</p>
         </section>
       </div>
     </main>
