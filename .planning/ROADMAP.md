@@ -32,8 +32,8 @@ Decimal phases appear between their surrounding integers in numeric order.
 
 Plans:
 - [x] 01-01-PLAN.md — Environment setup: Android SDK/NDK verification, Rust targets, gitignore
-- [ ] 01-02-PLAN.md — Frontend scaffold: React/Vite/TS config files, HTML entry point, workspace integration
-- [ ] 01-03-PLAN.md — Rust backend: Cargo/Tauri config, greet command, store plugin, icons, Turbo tasks
+- [x] 01-02-PLAN.md — Frontend scaffold: React/Vite/TS config files, HTML entry point, workspace integration
+- [x] 01-03-PLAN.md — Rust backend: Cargo/Tauri config, greet command, store plugin, icons, Turbo tasks
 - [ ] 01-04-PLAN.md — Android init, capabilities, verification screen, device test
 **UI hint**: yes
 
