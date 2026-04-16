@@ -12,6 +12,6 @@ export default defineConfig({
     passWithNoTests: true,
   },
   resolve: {
-    alias: { "@": resolve(__dirname, "./src") },
+    alias: { "@": resolve(import.meta.dirname, "./src") },
   },
 })
