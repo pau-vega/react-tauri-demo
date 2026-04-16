@@ -1,5 +1,5 @@
 ---
-status: complete
+status: diagnosed
 phase: 01-foundation
 source: [01-01-SUMMARY.md, 01-02-SUMMARY.md, 01-03-SUMMARY.md, 01-04-SUMMARY.md]
 started: 2026-04-16T17:30:00Z
@@ -64,9 +64,12 @@ blocked: 0
   reason: "User reported: I've got IPC error: Cannot read properties of undefined (reading 'invoke'). Check logcat."
   severity: major
   test: 3
-  root_cause: ""
-  artifacts: []
-  missing: []
+  root_cause: "App tested in plain browser (localhost:1420) instead of Tauri webview. invoke requires window.__TAURI_INTERNALS__ injected by native runtime. Code is correct but lacks a guard for browser-based development."
+  artifacts:
+    - path: "apps/tauri-todo/src/components/verification-screen.tsx"
+      issue: "No guard for missing Tauri runtime — invoke crashes in browser"
+  missing:
+    - "Add window.__TAURI_INTERNALS__ check before calling invoke/load, show 'Not running inside Tauri' message when absent"
   debug_session: ""
 
 - truth: "Store plugin writes and reads back value with success confirmation"
@@ -74,9 +77,12 @@ blocked: 0
   reason: "User reported: Got this Store error: Cannot read properties of undefined (reading 'invoke'). Check capabilities."
   severity: major
   test: 4
-  root_cause: ""
-  artifacts: []
-  missing: []
+  root_cause: "Same root cause as test 3 — app tested in browser without Tauri runtime. Store plugin also depends on IPC invoke internally."
+  artifacts:
+    - path: "apps/tauri-todo/src/components/verification-screen.tsx"
+      issue: "No guard for missing Tauri runtime — store load() crashes in browser"
+  missing:
+    - "Same fix as test 3 — guard covers both IPC and Store sections"
   debug_session: ""
 
 - truth: "Android device deployment via pnpm android:dev launches app on device"
@@ -84,9 +90,12 @@ blocked: 0
   reason: "User reported: pnpm android:dev --filter @monorepo-template/tauri-todo fails with ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL Command 'android:dev' not found"
   severity: major
   test: 6
-  root_cause: ""
-  artifacts: []
-  missing: []
+  root_cause: "pnpm CLI syntax error — --filter must come BEFORE the command name. Correct: pnpm --filter @monorepo-template/tauri-todo android:dev. Also no root-level android:dev script exists for convenience."
+  artifacts:
+    - path: "package.json"
+      issue: "No root-level android:dev script for turbo passthrough"
+  missing:
+    - "Add android:dev and android:build root scripts to package.json for turbo passthrough"
   debug_session: ""
 
 - truth: "TypeScript typecheck passes without errors for tauri-todo package"
@@ -94,7 +103,10 @@ blocked: 0
   reason: "User reported: lint works but typecheck fails — TS2345 in verification-screen.tsx:38 — Argument of type '{ autoSave: false; }' is not assignable to parameter of type 'StoreOptions'. Property 'defaults' is missing."
   severity: major
   test: 7
-  root_cause: ""
-  artifacts: []
-  missing: []
+  root_cause: "@tauri-apps/plugin-store@2.4.2 StoreOptions type requires defaults as mandatory field. load() call passes { autoSave: false } without defaults."
+  artifacts:
+    - path: "apps/tauri-todo/src/components/verification-screen.tsx"
+      issue: "load() call at line 38 missing required defaults property"
+  missing:
+    - "Add defaults: {} to load() options or remove options entirely (second param is optional)"
   debug_session: ""
