@@ -14,6 +14,10 @@ type StoreState =
   | { status: "success"; value: string }
   | { status: "error"; message: string }
 
+function isTauriRuntime(): boolean {
+  return typeof window !== "undefined" && "__TAURI_INTERNALS__" in window
+}
+
 export function VerificationScreen() {
   const [name, setName] = useState("")
   const [ipcState, setIpcState] = useState<IpcState>({ status: "idle" })
@@ -22,6 +26,10 @@ export function VerificationScreen() {
   const platform = import.meta.env.TAURI_ENV_PLATFORM ?? "web"
 
   async function handleGreet() {
+    if (!isTauriRuntime()) {
+      setIpcState({ status: "error", message: "Not running inside Tauri — launch via tauri android dev or tauri dev" })
+      return
+    }
     setIpcState({ status: "loading" })
     try {
       const result = await invoke<string>("greet", { name })
@@ -33,9 +41,16 @@ export function VerificationScreen() {
   }
 
   async function handleStoreTest() {
+    if (!isTauriRuntime()) {
+      setStoreState({
+        status: "error",
+        message: "Not running inside Tauri — launch via tauri android dev or tauri dev",
+      })
+      return
+    }
     setStoreState({ status: "loading" })
     try {
-      const store = await load("store.json", { autoSave: false })
+      const store = await load("store.json", { autoSave: false, defaults: {} })
       await store.set("test-key", { value: "phase-1-check" })
       await store.save()
       const val = await store.get<{ value: string }>("test-key")
