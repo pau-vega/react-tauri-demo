@@ -67,4 +67,47 @@ describe("TodoItem", () => {
     )
     expect(screen.getByText("Walk the dog")).toBeInTheDocument()
   })
+
+  it("renders the toggle at 44px (w-11 h-11) when todo is incomplete", () => {
+    render(
+      <TodoItem
+        onDelete={vi.fn(async () => undefined)}
+        onToggle={vi.fn(async () => undefined)}
+        todo={makeTodo({ completed: false })}
+      />,
+    )
+    const toggle = screen.getByRole("button", { name: "Mark as complete" })
+    expect(toggle.className).toMatch(/\bw-11\b/)
+    expect(toggle.className).toMatch(/\bh-11\b/)
+    expect(toggle.className).not.toMatch(/\bw-6\b/)
+    expect(toggle.className).not.toMatch(/\bh-6\b/)
+  })
+
+  it("renders the toggle at 44px (w-11 h-11) when todo is completed", () => {
+    render(
+      <TodoItem
+        onDelete={vi.fn(async () => undefined)}
+        onToggle={vi.fn(async () => undefined)}
+        todo={makeTodo({ completed: true })}
+      />,
+    )
+    const toggle = screen.getByRole("button", { name: "Mark as incomplete" })
+    expect(toggle.className).toMatch(/\bw-11\b/)
+    expect(toggle.className).toMatch(/\bh-11\b/)
+  })
+
+  it("renders the delete button at 44px (w-11 h-11) and not w-8/h-8", () => {
+    render(
+      <TodoItem
+        onDelete={vi.fn(async () => undefined)}
+        onToggle={vi.fn(async () => undefined)}
+        todo={makeTodo()}
+      />,
+    )
+    const del = screen.getByRole("button", { name: /delete todo/i })
+    expect(del.className).toMatch(/\bw-11\b/)
+    expect(del.className).toMatch(/\bh-11\b/)
+    expect(del.className).not.toMatch(/\bw-8\b/)
+    expect(del.className).not.toMatch(/\bh-8\b/)
+  })
 })

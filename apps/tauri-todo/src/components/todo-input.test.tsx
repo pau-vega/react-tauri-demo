@@ -65,4 +65,18 @@ describe("TodoInput", () => {
     await user.type(screen.getByPlaceholderText("Add a todo..."), "a")
     expect(button).not.toBeDisabled()
   })
+
+  it("renders the input with h-11 (44px) and not h-10", () => {
+    render(<TodoInput disabled={false} onAdd={vi.fn(async () => undefined)} />)
+    const input = screen.getByPlaceholderText("Add a todo...")
+    expect(input.className).toMatch(/\bh-11\b/)
+    expect(input.className).not.toMatch(/\bh-10\b/)
+  })
+
+  it("renders the Add button with h-11 (44px) and not h-10", () => {
+    render(<TodoInput disabled={false} onAdd={vi.fn(async () => undefined)} />)
+    const button = screen.getByRole("button", { name: /add/i })
+    expect(button.className).toMatch(/\bh-11\b/)
+    expect(button.className).not.toMatch(/\bh-10\b/)
+  })
 })
