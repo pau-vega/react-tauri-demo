@@ -2,11 +2,19 @@
 
 ## What This Is
 
-A simple todo list app built with React and Tauri v2, targeting Android and iOS as native mobile apps. Lives in `apps/tauri-todo` within the monorepo. The purpose is to explore how Tauri works for mobile development — a self-contained experiment with no backend dependencies.
+A Tauri v2 + React todo app running natively on Android, built inside the monorepo at `apps/tauri-todo`. Full CRUD, persistent local storage via `@tauri-apps/plugin-store`, 44px touch targets, safe-area insets, haptic feedback — no backend, no auth, no cloud. The experiment that proved Tauri v2 can ship a React app as a real Android app.
 
 ## Core Value
 
 Prove that Tauri v2 can build and install a React app as a native mobile app on Android and iOS.
+
+## Current State
+
+**Shipped: v1.0 MVP** (2026-04-17) — Android-only, full todo CRUD with persistence and mobile-native UX. 71/71 tests green, 19/19 requirements satisfied, on-device verified on Pixel 8a. Tag: `v1.0`. Details: `.planning/MILESTONES.md`.
+
+## Next Milestone Goals
+
+Open question — likely v2 candidates: iOS parity (IOS-01..IOS-04), enhanced todo features (swipe-to-delete, inline edit, categories), or a deeper platform integration. Run `/gsd-new-milestone` to decide.
 
 ## Requirements
 
@@ -25,10 +33,13 @@ Prove that Tauri v2 can build and install a React app as a native mobile app on 
 - [x] Standalone Tailwind styling re-verified (UX-03) — Validated in Phase 3: Mobile Polish (FS-grep lint)
 - [x] Haptic feedback on add/delete via @tauri-apps/plugin-haptics (UX-04) — Validated in Phase 3: Mobile Polish (plugin installed, IPC contract verified, delete haptic device-perceivable on Pixel 8a; add/toggle below motor threshold per D-13)
 
+### Validated (v1.0)
+
+- ✓ App builds and installs on Android — v1.0 (dev build verified on Pixel 8a across all three phases)
+
 ### Active
 
-- [x] App builds and installs on Android — Validated in Phases 1+2+3 (dev build verified on Pixel 8a across all three phases)
-- [ ] App builds and installs on iOS
+- [ ] App builds and installs on iOS — deferred to v2 (IOS-01..IOS-04 in `milestones/v1.0-REQUIREMENTS.md`)
 
 ### Out of Scope
 
@@ -40,12 +51,12 @@ Prove that Tauri v2 can build and install a React app as a native mobile app on 
 
 ## Context
 
-- This is an exploratory project to evaluate Tauri v2 for mobile development
-- The monorepo already has a showcase Vite+React app in `apps/showcase` — this follows similar patterns but adds Tauri
-- Tauri v2 has native mobile support (Android/iOS) — this is the key feature being tested
-- The monorepo uses pnpm workspaces, Turbo, TypeScript 5.9.3, and shared configs
-- Tauri docs at https://v2.tauri.app/es/
-- Must use latest stable Tauri v2 versions
+- Shipped v1.0 in 3 days (2026-04-15 → 2026-04-17): ~1,286 LOC TS/TSX + 17 LOC Rust in `apps/tauri-todo`, 123 commits, 71 tests green
+- Tech stack: Tauri v2, React 19, Vite, Tailwind CSS 4, `@tauri-apps/plugin-store` (persistence), `@tauri-apps/plugin-haptics` 2.3.2 (mobile-only target-cfg)
+- Android-only build; iOS infrastructure exists but not initialized — deferred to v2
+- Known device caveat: `impactFeedback`/`selectionFeedback` waveforms are iOS-tuned and produce no perceivable vibration on Pixel 8a (D-13 override accepted); `notificationFeedback` (delete) fires perceivably. Post-v1 polish: try raw `vibrate(ms)` on Android
+- The monorepo's showcase app (`apps/showcase`) pattern informed but is not coupled to `tauri-todo` — per the standalone-styling decision
+- Tauri docs: https://v2.tauri.app/es/
 
 ## Constraints
 
@@ -84,4 +95,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-04-17 after Phase 3 (Mobile Polish) completion*
+*Last updated: 2026-04-17 after v1.0 milestone*
