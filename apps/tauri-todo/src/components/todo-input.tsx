@@ -22,13 +22,13 @@ export function TodoInput({ onAdd, disabled }: TodoInputProps) {
     <form className="flex gap-2" onSubmit={handleSubmit}>
       <input
         autoFocus
-        className="flex-1 h-10 px-3 bg-white border border-gray-200 rounded-md text-base text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-700"
+        className="flex-1 h-11 px-3 bg-white border border-gray-200 rounded-md text-base text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-700"
         onChange={(e) => setText(e.target.value)}
         placeholder="Add a todo..."
         value={text}
       />
       <button
-        className="shrink-0 h-10 px-4 bg-blue-700 text-white text-sm font-normal rounded-md active:opacity-90 disabled:opacity-50"
+        className="shrink-0 h-11 px-4 bg-blue-700 text-white text-sm font-normal rounded-md active:opacity-90 disabled:opacity-50"
         disabled={!canSubmit}
         type="submit"
       >
