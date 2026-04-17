@@ -3,6 +3,8 @@ import type { Store } from "@tauri-apps/plugin-store"
 import { load } from "@tauri-apps/plugin-store"
 import { useEffect, useRef, useState } from "react"
 
+import { hapticAdd, hapticDelete, hapticToggle } from "@/lib/haptics"
+
 export type Todo = {
   id: string
   text: string
@@ -42,17 +44,19 @@ export function useTodos() {
     }
   }, [])
 
-  async function save(next: Todo[]) {
+  async function save(next: Todo[]): Promise<boolean> {
     const store = storeRef.current
-    if (!store) return
+    if (!store) return false
     try {
       await store.set("todos", next)
       await store.save()
       todosRef.current = next
       setState({ status: "ready", todos: next })
+      return true
     } catch (err) {
       const message = err instanceof Error ? err.message : String(err)
       setState({ status: "error", message })
+      return false
     }
   }
 
@@ -61,19 +65,25 @@ export function useTodos() {
     const trimmed = text.trim()
     if (trimmed.length === 0) return
     const next: Todo[] = [...todosRef.current, { id: crypto.randomUUID(), text: trimmed, completed: false }]
-    await save(next)
+    const ok = await save(next)
+    if (!ok) return
+    void hapticAdd()
   }
 
   async function toggleTodo(id: string) {
     if (!storeRef.current) return
     const next = todosRef.current.map((t) => (t.id === id ? { ...t, completed: !t.completed } : t))
-    await save(next)
+    const ok = await save(next)
+    if (!ok) return
+    void hapticToggle()
   }
 
   async function deleteTodo(id: string) {
     if (!storeRef.current) return
     const next = todosRef.current.filter((t) => t.id !== id)
-    await save(next)
+    const ok = await save(next)
+    if (!ok) return
+    void hapticDelete()
   }
 
   return { state, addTodo, toggleTodo, deleteTodo }
