@@ -149,3 +149,6 @@ vite.config.ts.timestamp-*
 
 # Tauri generated files
 gen/
+
+# Playwright MCP session artifacts
+.playwright-mcp/
