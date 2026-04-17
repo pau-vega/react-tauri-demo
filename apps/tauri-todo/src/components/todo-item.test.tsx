@@ -98,11 +98,7 @@ describe("TodoItem", () => {
 
   it("renders the delete button at 44px (w-11 h-11) and not w-8/h-8", () => {
     render(
-      <TodoItem
-        onDelete={vi.fn(async () => undefined)}
-        onToggle={vi.fn(async () => undefined)}
-        todo={makeTodo()}
-      />,
+      <TodoItem onDelete={vi.fn(async () => undefined)} onToggle={vi.fn(async () => undefined)} todo={makeTodo()} />,
     )
     const del = screen.getByRole("button", { name: /delete todo/i })
     expect(del.className).toMatch(/\bw-11\b/)

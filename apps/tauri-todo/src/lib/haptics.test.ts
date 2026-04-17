@@ -1,6 +1,5 @@
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
-
 import { impactFeedback, notificationFeedback, selectionFeedback } from "@tauri-apps/plugin-haptics"
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 
 import { hapticAdd, hapticDelete, hapticToggle } from "@/lib/haptics"
 
