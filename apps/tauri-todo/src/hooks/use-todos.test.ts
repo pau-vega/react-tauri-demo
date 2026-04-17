@@ -5,9 +5,16 @@ import { act, renderHook, waitFor } from "@testing-library/react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 
 import { useTodos } from "@/hooks/use-todos"
+import { hapticAdd, hapticDelete, hapticToggle } from "@/lib/haptics"
 
 vi.mock("@tauri-apps/plugin-store", () => ({
   load: vi.fn(),
+}))
+
+vi.mock("@/lib/haptics", () => ({
+  hapticAdd: vi.fn(async () => undefined),
+  hapticToggle: vi.fn(async () => undefined),
+  hapticDelete: vi.fn(async () => undefined),
 }))
 
 type StoreDouble = {
@@ -72,6 +79,9 @@ describe("useTodos", () => {
       expect.arrayContaining([expect.objectContaining({ text: "Buy milk" })]),
     )
     expect(double.save).toHaveBeenCalled()
+    expect(hapticAdd).toHaveBeenCalledTimes(1)
+    expect(hapticToggle).not.toHaveBeenCalled()
+    expect(hapticDelete).not.toHaveBeenCalled()
   })
 
   it("is a no-op when addTodo receives whitespace-only text", async () => {
@@ -89,6 +99,7 @@ describe("useTodos", () => {
     expect(result.current.state.todos).toEqual([])
     expect(double.set).not.toHaveBeenCalled()
     expect(double.save).not.toHaveBeenCalled()
+    expect(hapticAdd).not.toHaveBeenCalled()
   })
 
   it("is a no-op when addTodo receives an empty string", async () => {
@@ -105,6 +116,7 @@ describe("useTodos", () => {
     if (result.current.state.status !== "ready") throw new Error("expected ready")
     expect(result.current.state.todos).toEqual([])
     expect(double.set).not.toHaveBeenCalled()
+    expect(hapticAdd).not.toHaveBeenCalled()
   })
 
   it("toggles only the matching todo's completed flag, leaving other todos unchanged", async () => {
@@ -127,6 +139,9 @@ describe("useTodos", () => {
     const byId = Object.fromEntries(result.current.state.todos.map((t) => [t.id, t.completed]))
     expect(byId).toEqual({ "id-a": false, "id-b": true, "id-c": true })
     expect(double.save).toHaveBeenCalled()
+    expect(hapticToggle).toHaveBeenCalledTimes(1)
+    expect(hapticAdd).not.toHaveBeenCalled()
+    expect(hapticDelete).not.toHaveBeenCalled()
   })
 
   it("toggles back to incomplete when called twice on the same id", async () => {
@@ -171,6 +186,9 @@ describe("useTodos", () => {
       { id: "id-c", text: "c", completed: false },
     ])
     expect(double.save).toHaveBeenCalled()
+    expect(hapticDelete).toHaveBeenCalledTimes(1)
+    expect(hapticAdd).not.toHaveBeenCalled()
+    expect(hapticToggle).not.toHaveBeenCalled()
   })
 
   it("transitions to error status when the initial store load fails", async () => {
@@ -183,5 +201,58 @@ describe("useTodos", () => {
     })
     if (result.current.state.status !== "error") throw new Error("expected error")
     expect(result.current.state.message).toBe("load failed")
+  })
+
+  it("does not call hapticAdd when save() fails after addTodo", async () => {
+    const double = createStoreDouble()
+    double.save = vi.fn(async () => {
+      throw new Error("disk full")
+    })
+    vi.mocked(load).mockResolvedValue(double as unknown as Store)
+
+    const { result } = renderHook(() => useTodos())
+    await waitFor(() => expect(result.current.state.status).toBe("ready"))
+
+    await act(async () => {
+      await result.current.addTodo("Buy milk")
+    })
+
+    expect(hapticAdd).not.toHaveBeenCalled()
+  })
+
+  it("does not call hapticToggle when save() fails after toggleTodo", async () => {
+    const existing = [{ id: "id-a", text: "a", completed: false }]
+    const double = createStoreDouble({ todos: existing })
+    double.save = vi.fn(async () => {
+      throw new Error("disk full")
+    })
+    vi.mocked(load).mockResolvedValue(double as unknown as Store)
+
+    const { result } = renderHook(() => useTodos())
+    await waitFor(() => expect(result.current.state.status).toBe("ready"))
+
+    await act(async () => {
+      await result.current.toggleTodo("id-a")
+    })
+
+    expect(hapticToggle).not.toHaveBeenCalled()
+  })
+
+  it("does not call hapticDelete when save() fails after deleteTodo", async () => {
+    const existing = [{ id: "id-a", text: "a", completed: false }]
+    const double = createStoreDouble({ todos: existing })
+    double.save = vi.fn(async () => {
+      throw new Error("disk full")
+    })
+    vi.mocked(load).mockResolvedValue(double as unknown as Store)
+
+    const { result } = renderHook(() => useTodos())
+    await waitFor(() => expect(result.current.state.status).toBe("ready"))
+
+    await act(async () => {
+      await result.current.deleteTodo("id-a")
+    })
+
+    expect(hapticDelete).not.toHaveBeenCalled()
   })
 })
