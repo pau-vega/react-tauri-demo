@@ -69,8 +69,8 @@ Plans:
 Plans:
 - [x] 03-01-PLAN.md — Wave 0 test scaffolds (runtime/haptics/lint/component tests; Nyquist failing-tests-first)
 - [x] 03-02-PLAN.md — Haptics plugin install (JS 2.3.2 + Cargo target-cfg + lib.rs setup + capability grants)
-- [ ] 03-03-PLAN.md — 44px touch targets (h-11 on input/button, w-11 h-11 on toggle/delete) + safe-area inset padding on main
-- [ ] 03-04-PLAN.md — Haptic wiring in useTodos (save() returns boolean, fire-and-forget on success)
+- [x] 03-03-PLAN.md — 44px touch targets (h-11 on input/button, w-11 h-11 on toggle/delete) + safe-area inset padding on main
+- [x] 03-04-PLAN.md — Haptic wiring in useTodos (save() returns boolean, fire-and-forget on success)
 - [ ] 03-05-PLAN.md — On-device Android verification checkpoint (haptics, safe-area, 44px feel)
 **UI hint**: yes
 
