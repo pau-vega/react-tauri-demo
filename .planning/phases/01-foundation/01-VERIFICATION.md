@@ -1,31 +1,35 @@
 ---
 phase: 01-foundation
-verified: 2026-04-16T19:30:00Z
-status: human_needed
-score: 4/5
+verified: 2026-04-17T00:00:00Z
+status: passed
+score: 5/5
 overrides_applied: 0
 re_verification:
   previous_status: human_needed
   previous_score: 4/5
   gaps_closed:
-    - "IPC Bridge shows 'Not running inside Tauri' message in browser (Plan 05 guard added)"
-    - "Store Plugin shows 'Not running inside Tauri' message in browser (Plan 05 guard added)"
-    - "README documents correct pnpm --filter syntax for monorepo root usage (Plan 05)"
-    - "TypeScript TS2345 error resolved — defaults: {} added to StoreOptions (Plan 05)"
+    - "SC-1 (Android device end-to-end) confirmed via phase 02-03 human checkpoint (user-approved 2026-04-16, Store persistence across restart) and phase 03-05 on-device Pixel 8a sign-off (commit e9642ac, 2026-04-17)"
   gaps_remaining: []
   regressions: []
-human_verification:
-  - test: "Run `cd apps/tauri-todo && pnpm android:dev` (or `pnpm --filter @monorepo-template/tauri-todo android:dev` from root) on a connected Android device. Tap 'Send Greeting' (enter any name). Tap 'Test Store'. Observe the Environment section platform value."
-    expected: "IPC Bridge returns 'Hello, {name}!' in green text. Store Plugin shows 'Write OK / Read OK — phase-1-check' in green text. Platform shows 'android' or 'web' (minor env var detection issue is non-blocking)."
-    why_human: "End-to-end Android device test requires physical hardware, ADB connectivity, Gradle + Rust compilation (10-30 min first build). Cannot be verified programmatically. SUMMARY-04 documents a prior human verification pass on 2026-04-16 (IPC: PASS, Store: PASS, Platform: 'web'). Plan 05 changes (browser guard + README) do not affect the Android build pipeline or IPC wiring — prior device evidence remains valid for the current codebase."
+human_verification: []
 ---
 
 # Phase 1: Foundation Verification Report
 
 **Phase Goal:** The dev environment is ready and Tauri v2 compiles and runs on Android
-**Verified:** 2026-04-16T19:30:00Z
-**Status:** human_needed
-**Re-verification:** Yes — after Plan 05 gap closure (UAT fixes)
+**Verified:** 2026-04-17T00:00:00Z
+**Status:** passed
+**Re-verification:** Yes — SC-1 confirmed via later on-device evidence (see 2026-04-17 update below)
+
+## 2026-04-17 Update — SC-1 Resolved
+
+The original verification-screen scaffolding (`greet` IPC command + `Test Store` button) was intentionally removed in phase 02-02 (commit `5b84df8`) when the real TodoApp replaced it. The underlying SC-1 capability — Tauri runtime active on Android, IPC bridge wired, Store plugin reading/writing device filesystem — was confirmed on a real device by:
+
+- **Phase 02-03** human checkpoint (user-approved 2026-04-16): Store persistence across app restart (PERS-02) on real Android device.
+- **Phase 03-05** on-device sign-off (commit `e9642ac`, 2026-04-17): full TodoApp verified on Google Pixel 8a — Store writes/reads, safe-area insets, haptics, and touch targets exercised end-to-end.
+
+Because the Store plugin uses Tauri's IPC internally, working Store reads/writes on device implies IPC + runtime are functional. Score upgraded 4/5 → 5/5. Status `human_needed` → `passed`.
+
 
 ## Re-verification Summary
 
