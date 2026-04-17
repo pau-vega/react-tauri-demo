@@ -1,10 +1,11 @@
 ---
 gsd_state_version: 1.0
 milestone: v1.0
-milestone_name: milestone
-status: executing
-stopped_at: Phase 03 UI-SPEC approved
-last_updated: "2026-04-17T11:16:34.093Z"
+milestone_name: MVP
+status: shipped
+shipped_at: 2026-04-17
+tag: v1.0
+last_updated: "2026-04-17T11:21:34.000Z"
 last_activity: 2026-04-17
 progress:
   total_phases: 3
@@ -18,19 +19,18 @@ progress:
 
 ## Project Reference
 
-See: .planning/PROJECT.md (updated 2026-04-15)
+See: .planning/PROJECT.md (updated 2026-04-17 after v1.0 milestone)
 
 **Core value:** Prove that Tauri v2 can build and install a React app as a native mobile app on Android and iOS
-**Current focus:** Phase 03 — mobile-polish
+**Current focus:** v1.0 shipped — planning next milestone (run `/gsd-new-milestone`)
 
 ## Current Position
 
-Phase: 03
-Plan: Not started
-Status: Executing Phase 03
-Last activity: 2026-04-17
+Milestone: v1.0 MVP — SHIPPED 2026-04-17
+Tag: v1.0 (pushed to origin)
+Next: /gsd-new-milestone to plan v2
 
-Progress: [░░░░░░░░░░] 0%
+Progress: [██████████] 100%
 
 ## Performance Metrics
 
@@ -84,6 +84,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-04-17T06:48:56.656Z
-Stopped at: Phase 03 UI-SPEC approved
-Resume file: .planning/phases/03-mobile-polish/03-UI-SPEC.md
+Last session: 2026-04-17 — v1.0 milestone closed
+Stopped at: v1.0 shipped, tagged, pushed
+Resume: run `/gsd-new-milestone` to start next cycle
