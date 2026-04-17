@@ -5,6 +5,9 @@
   "platforms": ["iOS", "android"],
   "permissions": [
     "core:default",
-    "store:default"
+    "store:default",
+    "haptics:allow-impact-feedback",
+    "haptics:allow-notification-feedback",
+    "haptics:allow-selection-feedback"
   ]
 }
