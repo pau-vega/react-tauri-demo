@@ -20,10 +20,14 @@ Prove that Tauri v2 can build and install a React app as a native mobile app on 
 - [x] User can delete a todo — Validated in Phase 2: Todo App (TODO-03, device-verified)
 - [x] Todos persist across app restarts via @tauri-apps/plugin-store — Validated in Phase 2: Todo App (PERS-02, device-verified on cold restart)
 - [x] Standalone styling (no dependency on @monorepo-template/ui) — Validated in Phase 2: Todo App (raw Tailwind, zero UI-package imports)
+- [x] Mobile-native styling with 44px minimum touch targets (UX-01) — Validated in Phase 3: Mobile Polish (h-11 on input + Add; w-11 h-11 on toggle + delete; device-verified on Pixel 8a)
+- [x] No hover states, mobile-only design (UX-02) — Validated in Phase 3: Mobile Polish (FS-grep lint + device-verified)
+- [x] Standalone Tailwind styling re-verified (UX-03) — Validated in Phase 3: Mobile Polish (FS-grep lint)
+- [x] Haptic feedback on add/delete via @tauri-apps/plugin-haptics (UX-04) — Validated in Phase 3: Mobile Polish (plugin installed, IPC contract verified, delete haptic device-perceivable on Pixel 8a; add/toggle below motor threshold per D-13)
 
 ### Active
 
-- [ ] App builds and installs on Android
+- [x] App builds and installs on Android — Validated in Phases 1+2+3 (dev build verified on Pixel 8a across all three phases)
 - [ ] App builds and installs on iOS
 
 ### Out of Scope
@@ -59,6 +63,8 @@ Prove that Tauri v2 can build and install a React app as a native mobile app on 
 | @tauri-apps/plugin-store for persistence | Native key-value storage, no web API reliance | Validated — PERS-02 passed on-device restart |
 | Standalone styling | Keep experiment isolated from UI package | Validated — raw Tailwind in Phase 2, zero UI imports |
 | Mobile only | Core question is whether Tauri mobile works | Validated — Android working; iOS deferred to v2 |
+| 44px touch target floor on every interactive control | Apple HIG / Material Design minimum; makes thumb-tapping reliable on small screens | Validated — Phase 3 UX-01, device-verified on Pixel 8a |
+| Accept device-dependent Android haptic behavior (D-13) | Plugin docs: "no standards or requirements for vibration support on Android"; impactFeedback/selectionFeedback waveforms are iOS-tuned | Validated — Phase 3 on-device UAT; delete haptic fires; add/toggle below motor threshold on Pixel 8a (accepted, not blocking) |
 
 ## Evolution
 
@@ -78,4 +84,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-04-16 after Phase 2 (Todo App) completion*
+*Last updated: 2026-04-17 after Phase 3 (Mobile Polish) completion*
