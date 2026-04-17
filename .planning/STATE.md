@@ -5,8 +5,8 @@ milestone_name: MVP
 status: shipped
 shipped_at: 2026-04-17
 tag: v1.0
-last_updated: "2026-04-17T11:21:34.000Z"
-last_activity: 2026-04-17
+last_updated: "2026-04-17T12:10:23.420Z"
+last_activity: 2026-04-17 - Completed quick task 260417-jon: Add missing ignores to root .gitignore
 progress:
   total_phases: 3
   completed_phases: 3
@@ -75,6 +75,12 @@ None yet.
 
 - First Android compile takes 10-30 min — this is expected, not a failure
 - `tauri add` command is broken in pnpm workspaces; all plugin installs must be done manually
+
+### Quick Tasks Completed
+
+| # | Description | Date | Commit | Directory |
+|---|-------------|------|--------|-----------|
+| 260417-jon | Add missing ignores to root .gitignore: .claude/worktrees/, .idea/, apps/tauri-todo/src-tauri/target/ | 2026-04-17 | 5168a25 | [260417-jon-add-missing-ignores-to-root-gitignore-cl](./quick/260417-jon-add-missing-ignores-to-root-gitignore-cl/) |
 
 ## Deferred Items
 
