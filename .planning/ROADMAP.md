@@ -64,7 +64,14 @@ Plans:
   2. The app has no hover-state CSS — every interaction works by touch only
   3. Tailwind CSS styles are applied standalone with no dependency on @monorepo-template/ui
   4. Adding a todo and deleting a todo each trigger a haptic pulse on the device
-**Plans**: TBD
+**Plans:** 5 plans
+
+Plans:
+- [ ] 03-01-PLAN.md — Wave 0 test scaffolds (runtime/haptics/lint/component tests; Nyquist failing-tests-first)
+- [ ] 03-02-PLAN.md — Haptics plugin install (JS 2.3.2 + Cargo target-cfg + lib.rs setup + capability grants)
+- [ ] 03-03-PLAN.md — 44px touch targets (h-11 on input/button, w-11 h-11 on toggle/delete) + safe-area inset padding on main
+- [ ] 03-04-PLAN.md — Haptic wiring in useTodos (save() returns boolean, fire-and-forget on success)
+- [ ] 03-05-PLAN.md — On-device Android verification checkpoint (haptics, safe-area, 44px feel)
 **UI hint**: yes
 
 ## Progress
@@ -76,4 +83,4 @@ Phases execute in numeric order: 1 → 2 → 3
 |-------|----------------|--------|-----------|
 | 1. Foundation | 5/5 | Complete | - |
 | 2. Todo App | 0/3 | Planned | - |
-| 3. Mobile Polish | 0/? | Not started | - |
+| 3. Mobile Polish | 0/5 | Planned | - |

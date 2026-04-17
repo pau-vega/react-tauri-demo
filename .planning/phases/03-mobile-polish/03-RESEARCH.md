@@ -528,19 +528,19 @@ export function isTauriRuntime(): boolean {
 | A2 | The `max(2rem, env(safe-area-inset-top))` fallback is the right floor value. The current `py-8` on `<main>` = 2rem, so preserving 2rem matches pre-phase spacing. | Pattern 4 | Very low — if visually wrong on-device, adjust the floor value only (e.g., `max(1.5rem, env(...))`). No structural change needed. |
 | A3 | The haptics crate v2.3.2 remains at 2.3.2 at install time (latest published 2025-10-27). | Standard Stack | Low — if a newer version exists at install time, pin the newer version. Plan should use `pnpm view @tauri-apps/plugin-haptics version` and `cargo search tauri-plugin-haptics` as a pre-install check. |
 
-## Open Questions
+## Open Questions (RESOLVED)
 
-1. **Does the running `cargo build` on the dev macOS host actually attempt to compile `tauri-plugin-haptics`, or does the `[target.'cfg(...)']` section correctly skip it?**
+1. **Does the running `cargo build` on the dev macOS host actually attempt to compile `tauri-plugin-haptics`, or does the `[target.'cfg(...)']` section correctly skip it?** — RESOLVED: plan a post-edit smoke step running `cd apps/tauri-todo/src-tauri && cargo check --target aarch64-linux-android`; no host `cargo check` needed (Phase 1 D-07 keeps Rust out of Turbo).
    - What we know: The `cargo add ... --target 'cfg(any(target_os = "android", target_os = "ios"))'` syntax from the plugin docs implies Cargo respects the target guard and skips the crate on non-matching platforms.
    - What's unclear: Whether `pnpm typecheck` or the Turbo pipeline invokes `cargo check` — Phase 1 D-07 says "Rust code is independent of JS tooling — no `cargo check` in Turbo", which means the macOS host never builds the Rust side at all outside `android:dev` / `android:build`. Low practical risk.
    - Recommendation: Plan a smoke step — after `Cargo.toml` edit, run `cd apps/tauri-todo/src-tauri && cargo check --target aarch64-linux-android` to confirm it compiles mobile-targeted. No host `cargo check` needed.
 
-2. **Does `pnpm add @tauri-apps/plugin-haptics` automatically pick `2.3.2`, or pin at a different latest?**
+2. **Does `pnpm add @tauri-apps/plugin-haptics` automatically pick `2.3.2`, or pin at a different latest?** — RESOLVED: exact-pin to `2.3.2` (no caret) to match the crate version; if pnpm lands a different version, edit package.json and re-install.
    - What we know: npm registry reports `2.3.2` as `latest` (dist-tag) as of 2026-04-17.
    - What's unclear: Whether pnpm's internal resolution could select a different version if some workspace constraint forces it. No known constraint at this level.
    - Recommendation: After install, confirm `apps/tauri-todo/package.json` shows `"@tauri-apps/plugin-haptics": "2.3.2"` (no caret) — exact-pin to match the crate version. If pnpm lands a different version, pin by editing the package.json `dependencies` entry and re-running install.
 
-3. **Should the `isTauriRuntime` guard be exported from `src/lib/runtime.ts` or colocated inside `src/lib/haptics.ts`?**
+3. **Should the `isTauriRuntime` guard be exported from `src/lib/runtime.ts` or colocated inside `src/lib/haptics.ts`?** — RESOLVED: export it from `src/lib/runtime.ts` — future-proof, three-line module, endorsed by CONTEXT D-14 discretion.
    - What we know: Phase 1 had it inline in `verification-screen.tsx`. Phase 2 deleted that file with the guard. Only one file (`haptics.ts`) needs the guard today.
    - What's unclear: Will future phases need the guard again (e.g., if we add other plugins)?
    - Recommendation: Put it in `src/lib/runtime.ts` anyway — one extra file, future-proof, and the whole module is three lines. The current CONTEXT (D-14 + discretion) endorses either.
