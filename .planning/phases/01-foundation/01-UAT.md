@@ -1,14 +1,28 @@
 ---
-status: diagnosed
+status: complete
 phase: 01-foundation
 source: [01-01-SUMMARY.md, 01-02-SUMMARY.md, 01-03-SUMMARY.md, 01-04-SUMMARY.md]
 started: 2026-04-16T17:30:00Z
-updated: 2026-04-16T17:31:00Z
+updated: 2026-04-17T00:00:00Z
+resolution_verified: 2026-04-17
 ---
 
 ## Current Test
 
-[testing complete]
+[testing complete — gaps resolved]
+
+## Resolution Verified (2026-04-17)
+
+All 4 diagnosed gaps confirmed closed against current codebase:
+
+| Gap | Test | Resolution | Evidence |
+|-----|------|-----------|----------|
+| IPC crash in browser | 3 | Guard added (commit `9c899d9`), component later removed in phase 02-02 (commit `5b84df8`) | `verification-screen.tsx` no longer exists; TodoApp replaced it |
+| Store crash in browser | 4 | Same as #3 | Same commits |
+| `android:dev` syntax / root script | 6 | README documents `pnpm --filter` pattern with flag-order warning (D-14 decision: no root script) | `apps/tauri-todo/README.md:54-66` |
+| TS2345 typecheck error | 7 | `defaults: {}` added in Plan 05 (since removed with screen); typecheck now passes | `pnpm typecheck` → 6/6 tasks pass |
+
+Lint also passes (6/6 tasks). Separate `01-VERIFICATION.md` reports score 4/5 with SC-1 (physical device) confirmed via on-device verification commit `e9642ac` (phase 03-05).
 
 ## Tests
 
