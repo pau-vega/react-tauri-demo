@@ -4,6 +4,29 @@ import { describe, expect, it } from "vitest"
 
 const SRC_TAURI = resolve(import.meta.dirname, "../../src-tauri")
 
+describe("Phase 1 baseline capabilities", () => {
+  it("capabilities/mobile.json uses the mobile-capability identifier", async () => {
+    const raw = await readFile(resolve(SRC_TAURI, "capabilities/mobile.json"), "utf8")
+    const json = JSON.parse(raw) as { identifier: string }
+    expect(json.identifier).toBe("mobile-capability")
+  })
+
+  it("capabilities/mobile.json targets the main window on both mobile platforms", async () => {
+    const raw = await readFile(resolve(SRC_TAURI, "capabilities/mobile.json"), "utf8")
+    const json = JSON.parse(raw) as { windows: string[]; platforms: string[] }
+    expect(json.windows).toEqual(["main"])
+    expect(json.platforms).toContain("iOS")
+    expect(json.platforms).toContain("android")
+  })
+
+  it("capabilities/mobile.json grants core:default and store:default permissions", async () => {
+    const raw = await readFile(resolve(SRC_TAURI, "capabilities/mobile.json"), "utf8")
+    const json = JSON.parse(raw) as { permissions: string[] }
+    expect(json.permissions).toContain("core:default")
+    expect(json.permissions).toContain("store:default")
+  })
+})
+
 describe("haptics install integrity", () => {
   it("capabilities/mobile.json grants all three haptics:allow-* permissions", async () => {
     const raw = await readFile(resolve(SRC_TAURI, "capabilities/mobile.json"), "utf8")
