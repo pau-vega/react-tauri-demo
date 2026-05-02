@@ -67,14 +67,14 @@ pnpm --filter @monorepo-template/tauri-todo typecheck
 
 ### Other commands
 
-| Command | Description |
-|---------|-------------|
-| `pnpm build` | Production frontend build |
-| `pnpm android:build` | Android APK build |
-| `pnpm lint` | ESLint check and fix |
-| `pnpm typecheck` | TypeScript type checking |
-| `pnpm test` | Run Vitest unit tests |
-| `pnpm format` | Prettier formatting |
+| Command              | Description               |
+| -------------------- | ------------------------- |
+| `pnpm build`         | Production frontend build |
+| `pnpm android:build` | Android APK build         |
+| `pnpm lint`          | ESLint check and fix      |
+| `pnpm typecheck`     | TypeScript type checking  |
+| `pnpm test`          | Run Vitest unit tests     |
+| `pnpm format`        | Prettier formatting       |
 
 ## Troubleshooting
 
@@ -85,6 +85,7 @@ adb devices
 ```
 
 Should list your device. If empty:
+
 - Enable USB debugging: Settings > Developer options > USB debugging
 - Try a different USB cable (data cable, not charge-only)
 - Run `adb kill-server && adb start-server`
@@ -131,12 +132,12 @@ adb logcat -s tauri RustStdoutStderr chromium
 
 Common filters:
 
-| Filter | Shows |
-|--------|-------|
-| `adb logcat -s tauri` | Tauri framework messages |
-| `adb logcat -s RustStdoutStderr` | Rust println! and panic output |
-| `adb logcat -s chromium` | WebView console.log and JS errors |
-| `adb logcat \| grep -i "error\|panic\|fatal"` | All errors across the system |
+| Filter                                        | Shows                             |
+| --------------------------------------------- | --------------------------------- |
+| `adb logcat -s tauri`                         | Tauri framework messages          |
+| `adb logcat -s RustStdoutStderr`              | Rust println! and panic output    |
+| `adb logcat -s chromium`                      | WebView console.log and JS errors |
+| `adb logcat \| grep -i "error\|panic\|fatal"` | All errors across the system      |
 
 Clear logcat before testing:
 
