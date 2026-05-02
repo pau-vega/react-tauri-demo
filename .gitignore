@@ -125,6 +125,9 @@ dist
 # Stores VSCode versions used for testing VSCode extensions
 .vscode-test
 
+# JetBrains IDEs
+.idea/
+
 # yarn v3
 .pnp.*
 .yarn/*
@@ -146,3 +149,13 @@ vite.config.ts.timestamp-*
 
 # Turbo
 .turbo
+
+# Tauri generated files
+gen/
+apps/tauri-todo/src-tauri/target/
+
+# Playwright MCP session artifacts
+.playwright-mcp/
+
+# Claude Code agent artifacts
+.claude/worktrees/

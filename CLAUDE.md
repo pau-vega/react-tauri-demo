@@ -1,17 +1,19 @@
 <!-- GSD:project-start source:PROJECT.md -->
 ## Project
 
-**TypeScript 6 Migration**
+**React Tauri Todo App**
 
-A monorepo GitHub template (`base-monorepo-template`) used as the starting point for all new projects. Currently on TypeScript 5.9.3, migrating to TypeScript 6.x to stay on the latest compiler and address deprecations before they become errors in TS7.
+A simple todo list app built with React and Tauri v2, targeting Android and iOS as native mobile apps. Lives in `apps/tauri-todo` within the monorepo. The purpose is to explore how Tauri works for mobile development — a self-contained experiment with no backend dependencies.
 
-**Core Value:** The template starts new projects on the latest TypeScript with zero deprecation warnings — clean slate every time.
+**Core Value:** Prove that Tauri v2 can build and install a React app as a native mobile app on Android and iOS.
 
 ### Constraints
 
-- **Compatibility**: All existing packages (showcase, ui, eslint-config) must build and typecheck after migration
-- **No deprecation warnings**: The template should be clean — no `ignoreDeprecations: "6.0"` workaround
-- **Minimal churn**: Only change what TS6 requires; don't reorganize unrelated config
+- **Monorepo**: Must work within pnpm workspace and Turbo task orchestration
+- **TypeScript**: Must use project TypeScript setup (shared tsconfig)
+- **Tauri v2**: Must use latest stable Tauri v2 (not v1)
+- **Mobile only**: Configure only Android and iOS targets
+- **No backend**: All data stays on-device via Tauri Store plugin
 <!-- GSD:project-end -->
 
 <!-- GSD:stack-start source:codebase/STACK.md -->
@@ -265,6 +267,7 @@ A monorepo GitHub template (`base-monorepo-template`) used as the starting point
 | Skill | Description | Path |
 |-------|-------------|------|
 | shadcn | Manages shadcn components and projects — adding, searching, fixing, debugging, styling, and composing UI. Provides project context, component docs, and usage examples. Applies when working with shadcn/ui, component registries, presets, --preset codes, or any project with a components.json file. Also triggers for "shadcn init", "create an app with --preset", or "switch to --preset". | `.agents/skills/shadcn/SKILL.md` |
+| tauri-v2 | "Tauri v2+ cross-platform app development with Rust backend. Use when configuring tauri.conf.json, implementing Rust commands (#[tauri::command]), setting up IPC patterns (invoke, emit, channels), configuring permissions/capabilities, troubleshooting build issues, or deploying desktop/mobile apps. Triggers on Tauri, src-tauri, invoke, emit, capabilities.json." | `.agents/skills/tauri-v2/SKILL.md` |
 <!-- GSD:skills-end -->
 
 <!-- GSD:workflow-start source:GSD defaults -->
