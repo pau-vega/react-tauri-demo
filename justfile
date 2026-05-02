@@ -109,6 +109,25 @@ logs service:
     @echo "Tailing logs for '{{service}}'... (Press Ctrl+C to stop)"
     @grep -r "{{service}}" . --include="*.log" -i 2>/dev/null | tail -f || echo "No logs found for {{service}}"
 
+# --- CI ---
+
+# Dispatch CI workflow on a ref (default: current branch)
+[group('ci')]
+ci-run ref="":
+    #!/usr/bin/env bash
+    set -euo pipefail
+    target="{{ ref }}"
+    if [ -z "$target" ]; then
+        target="$(git rev-parse --abbrev-ref HEAD)"
+    fi
+    echo "Dispatching ci.yml on $target"
+    gh workflow run ci.yml --ref "$target"
+
+# Tail latest CI run
+[group('ci')]
+ci-watch:
+    gh run watch "$(gh run list --workflow=ci.yml --limit 1 --json databaseId --jq '.[0].databaseId')"
+
 # --- UI ---
 
 # Update all shadcn components in the ui package
