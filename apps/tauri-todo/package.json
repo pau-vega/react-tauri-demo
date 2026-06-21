@@ -16,9 +16,9 @@
     "android:build": "tauri android build --apk"
   },
   "dependencies": {
-    "@tauri-apps/api": "2.10.1",
-    "@tauri-apps/plugin-haptics": "2.3.2",
-    "@tauri-apps/plugin-store": "2.4.2",
+    "@tauri-apps/api": "^2.11.1",
+    "@tauri-apps/plugin-haptics": "^2.3.2",
+    "@tauri-apps/plugin-store": "^2.4.3",
     "react": "catalog:",
     "react-dom": "catalog:",
     "tailwindcss": "catalog:"
@@ -26,8 +26,8 @@
   "devDependencies": {
     "@monorepo-template/eslint-config": "workspace:*",
     "@monorepo-template/tsconfig": "workspace:*",
-    "@tailwindcss/vite": "^4.2.2",
-    "@tauri-apps/cli": "2.10.1",
+    "@tailwindcss/vite": "^4.3.1",
+    "@tauri-apps/cli": "^2.11.3",
     "@testing-library/jest-dom": "catalog:",
     "@testing-library/react": "catalog:",
     "@testing-library/user-event": "catalog:",
