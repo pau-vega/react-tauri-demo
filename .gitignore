@@ -159,3 +159,4 @@ apps/tauri-todo/src-tauri/target/
 
 # Claude Code agent artifacts
 .claude/worktrees/
+.claude/settings.local.json
